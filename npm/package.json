@@ -1,0 +1,20 @@
+{
+  "name": "tsgo",
+  "type": "module",
+  "version": "0.0.0",
+  "description": "TypeScript Go",
+  "homepage": "native port of TypeScript",
+  "license": "Apache-2.0",
+  "bin": "./bin/tsgo",
+  "files": [
+    "bin"
+  ],
+  "optionalDependencies": {
+    "@tsgo/darwin-arm64": "https://pkg.pr.new/sxzz/tsgo-releases/@tsgo/darwin-arm64@DATE",
+    "@tsgo/darwin-amd64": "https://pkg.pr.new/sxzz/tsgo-releases/@tsgo/darwin-amd64@DATE",
+    "@tsgo/linux-arm64": "https://pkg.pr.new/sxzz/tsgo-releases/@tsgo/linux-arm64@DATE",
+    "@tsgo/linux-amd64": "https://pkg.pr.new/sxzz/tsgo-releases/@tsgo/linux-amd64@DATE",
+    "@tsgo/win32-arm64": "https://pkg.pr.new/sxzz/tsgo-releases/@tsgo/win32-arm64@DATE",
+    "@tsgo/win32-amd64": "https://pkg.pr.new/sxzz/tsgo-releases/@tsgo/win32-amd64@DATE"
+  }
+}

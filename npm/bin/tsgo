@@ -1,0 +1,6 @@
+#!/usr/bin/env node
+import { execFileSync } from 'node:child_process'
+
+execFileSync(binPath, process.argv.slice(2), {
+  stdio: 'inherit',
+})

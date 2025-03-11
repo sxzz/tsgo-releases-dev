@@ -1,4 +1,4 @@
-name: Nightly Release
+name: Release
 
 on:
   schedule:
@@ -6,43 +6,52 @@ on:
   workflow_dispatch:
 
 jobs:
-  goreleaser:
+  release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - name: Checkout
+      - name: Checkout tsgo
         uses: actions/checkout@v4
-        with:
-          repository: microsoft/typescript-go
-          submodules: recursive
 
-      - name: download config
-        run: >
-          wget https://raw.githubusercontent.com/{{ $github.repository }}/main/.goreleaser.yml -O .goreleaser.yml &&
-          wget https://raw.githubusercontent.com/{{ $github.repository }}/main/copy.sh -O copy.sh &&
-          chmod +x copy.sh
+      - run: git submodule update --init --remote
 
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: '1.24'
+          cache-dependency-path: tsgo/go.sum
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: 'npm'
+          cache-dependency-path: tsgo/package-lock.json
 
       - name: Install dependencies
+        working-directory: tsgo
         run: npm ci
 
       - name: Build Lib
+        working-directory: tsgo
         run: npm exec hereby lib
+
+      - name: Get current date
+        id: date
+        run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+
+      - name: Create Tag
+        run: git tag ${{ steps.date.outputs.date }}
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser
-          version: nightly
-          args: release --clean
+          version: latest
+          args: release --clean --skip=validate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: npx pkg-pr-new publish
+        working-directory: npm
