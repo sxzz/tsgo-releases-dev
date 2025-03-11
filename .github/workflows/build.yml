@@ -1,0 +1,48 @@
+name: Nightly Release
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  goreleaser:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: microsoft/typescript-go
+          submodules: recursive
+
+      - name: download config
+        run: >
+          wget https://raw.githubusercontent.com/{{ $github.repository }}/main/.goreleaser.yml -O .goreleaser.yml &&
+          wget https://raw.githubusercontent.com/{{ $github.repository }}/main/copy.sh -O copy.sh &&
+          chmod +x copy.sh
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Lib
+        run: npm exec hereby lib
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser
+          version: nightly
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
