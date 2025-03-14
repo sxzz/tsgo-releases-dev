@@ -1,5 +1,5 @@
 {
-  "name": "tsgo-wasm",
+  "name": "@sxzz/tsgo-wasm",
   "type": "module",
   "version": "0.0.0-20250314",
   "description": "TypeScript Go",
