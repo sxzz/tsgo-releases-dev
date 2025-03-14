@@ -14,6 +14,19 @@ builds:
       # - arm64
     flags:
       - -tags=noembed
+    env:
+      - CGO_ENABLED=0
+
+  - id: tsgo-wasm
+    dir: tsgo
+    main: ./cmd/tsgo
+    binary: tsgo
+    goos:
+      - js
+    goarch:
+      - wasm
+    env:
+      - CGO_ENABLED=0
 
 archives:
   - formats: tar.gz
