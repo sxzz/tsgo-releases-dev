@@ -50,6 +50,11 @@ jobs:
       - name: Create Tag
         run: git tag ${{ steps.date.outputs.date }}
 
+      - name: Get tsgo Latest Commit SHA
+        id: tsgo_commit
+        working-directory: tsgo
+        run: echo "tsgo_commit=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v6
         with:
@@ -58,6 +63,7 @@ jobs:
           args: release --clean --skip=validate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TSGO_COMMIT: ${{ steps.tsgo_commit.outputs.tsgo_commit }}
 
       - name: Publish WASM
         run: ./prepare.sh && npm publish
@@ -65,3 +71,4 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
+          TSGO_COMMIT: ${{ steps.tsgo_commit.outputs.tsgo_commit }}
