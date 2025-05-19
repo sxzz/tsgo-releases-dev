@@ -78,7 +78,7 @@ jobs:
           TEST_RELEASE: ${{ github.event_name == 'workflow_dispatch' || github.repository == 'sxzz/tsgo-releases-dev' }}
 
       - name: Publish NPM packages
-        run: pnpm -r publish
+        run: pnpm -r publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
